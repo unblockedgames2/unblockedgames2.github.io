@@ -1,71 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Flappy Fanta</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
+
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
     const fantaImage = new Image();
-    fantaImage.src = 'https://upload.wikimedia.org/wikipedia/en/9/9a/Fanta_Logo.jpg';
-    
+    fantaImage.src = 'path_to_fanta_image.png'; // Replace 'path_to_fanta_image.png' with the actual path to your Fanta image
+
     let fantaX = 50;
     let fantaY = canvas.height / 2;
     let gravity = 1;
     let velocity = 0;
-    let isGameOver = false;
+    const jump = -20;
 
     function drawFanta() {
-      ctx.drawImage(fantaImage, fantaX, fantaY, 50, 50);
+      ctx.drawImage(fantaImage, fantaX, fantaY, 50, 50); // Adjust the size of Fanta as needed
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawFanta();
-      if (!isGameOver) {
-        requestAnimationFrame(draw);
-      }
+    function updateFanta() {
+      velocity += gravity;
+      fantaY += velocity;
     }
-
-    function flap() {
-      if (!isGameOver) {
-        velocity -= 20;
-      }
-    }
-
-    function update() {
-      if (!isGameOver) {
-        velocity += gravity;
-        fantaY += velocity;
-        if (fantaY > canvas.height || fantaY < 0) {
-          gameOver();
-        }
-      }
-    }
-
-    function gameOver() {
-      isGameOver = true;
-      alert('Game Over!');
-    }
-
-    document.addEventListener('keydown', function(event) {
-      if (event.code === 'Space') {
-        flap();
-      }
-    });
 
     function gameLoop() {
-      update();
-      draw();
-      if (!isGameOver) {
-        requestAnimationFrame(gameLoop);
-      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawFanta();
+      updateFanta();
+      requestAnimationFrame(gameLoop);
     }
+
+    canvas.addEventListener('click', () => {
+      velocity = jump;
+    });
 
     gameLoop();
   </script>
+
 </body>
 </html>
