@@ -1,6 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    </head>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fanta Bird</title>
+  <style>
+    canvas {
+      border: 2px solid #000;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
 <body>
-    Watch This.
-    </body>
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const fantaImage = new Image();
+    fantaImage.src = 'https://upload.wikimedia.org/wikipedia/en/9/9a/Fanta_Logo.jpg';
+    
+    let fantaX = 50;
+    let fantaY = canvas.height / 2;
+    let gravity = 1;
+    let velocity = 0;
+    let isGameOver = false;
+
+    function drawFanta() {
+      ctx.drawImage(fantaImage, fantaX, fantaY, 50, 50);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawFanta();
+      if (!isGameOver) {
+        requestAnimationFrame(draw);
+      }
+    }
+
+    function flap() {
+      if (!isGameOver) {
+        velocity -= 20;
+      }
+    }
+
+    function update() {
+      if (!isGameOver) {
+        velocity += gravity;
+        fantaY += velocity;
+        if (fantaY > canvas.height || fantaY < 0) {
+          gameOver();
+        }
+      }
+    }
+
+    function gameOver() {
+      isGameOver = true;
+      alert('Game Over!');
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.code === 'Space') {
+        flap();
+      }
+    });
+
+    function gameLoop() {
+      update();
+      draw();
+      if (!isGameOver) {
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>
