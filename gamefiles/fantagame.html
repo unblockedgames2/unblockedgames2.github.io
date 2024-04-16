@@ -1,56 +1,61 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Flappy Fanta</title>
-  <style>
-    canvas {
-      border: 1px solid #000;
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Flappy Fanta</title>
+    <style>
+      canvas {
+        border: 1px solid #000;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
 
-  <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <div class="game-iframe-container" id="game-player">
+      <div id="mobile-back-button" draggable="true">
+        <i class="bi bi-x-circle-fill"></i>
+      </div>
+      <iframe class="game-iframe" id="game-area" src="https://unblockedgames2.github.io/gamefiles/fantagame.html" width="480" height="800" scrolling="none" frameborder="0" allowfullscreen=""></iframe>
+    </div>
 
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    <script>
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
 
-    const fantaImage = new Image();
-    fantaImage.src = 'path_to_fanta_image.png'; // Replace 'path_to_fanta_image.png' with the actual path to your Fanta image
+      const fantaImage = new Image();
+      fantaImage.src = 'path_to_fanta_image.png'; // Replace 'path_to_fanta_image.png' with the actual path to your Fanta image
 
-    let fantaX = 50;
-    let fantaY = canvas.height / 2;
-    let gravity = 1;
-    let velocity = 0;
-    const jump = -20;
+      let fantaX = 50;
+      let fantaY = canvas.height / 2;
+      let gravity = 1;
+      let velocity = 0;
+      const jump = -20;
 
-    function drawFanta() {
-      ctx.drawImage(fantaImage, fantaX, fantaY, 50, 50); // Adjust the size of Fanta as needed
-    }
+      function drawFanta() {
+        ctx.drawImage(fantaImage, fantaX, fantaY, 50, 50); // Adjust the size of Fanta as needed
+      }
 
-    function updateFanta() {
-      velocity += gravity;
-      fantaY += velocity;
-    }
+      function updateFanta() {
+        velocity += gravity;
+        fantaY += velocity;
+      }
 
-    function gameLoop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawFanta();
-      updateFanta();
-      requestAnimationFrame(gameLoop);
-    }
+      function gameLoop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawFanta();
+        updateFanta();
+        requestAnimationFrame(gameLoop);
+      }
 
-    canvas.addEventListener('click', () => {
-      velocity = jump;
-    });
+      canvas.addEventListener('click', () => {
+        velocity = jump;
+      });
 
-    gameLoop();
-  </script>
+      gameLoop();
+    </script>
 
-</body>
+  </body>
 </html>
