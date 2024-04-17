@@ -42,6 +42,18 @@
             } else if (key === "ArrowRight") {
                 playerX += 5;
             }
+
+            // Teleportation when crossing the boundaries
+            if (playerX < 0) {
+                playerX = canvas.width - playerSize;
+            } else if (playerX + playerSize > canvas.width) {
+                playerX = 0;
+            }
+            if (playerY < 0) {
+                playerY = canvas.height - playerSize;
+            } else if (playerY + playerSize > canvas.height) {
+                playerY = 0;
+            }
         });
 
         // Game loop
