@@ -21,11 +21,6 @@
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div>
-        <label for="playerModel">Player Model URL:</label>
-        <input type="text" id="playerModel" value="https://i.kym-cdn.com/editorials/icons/original/000/005/910/stcover.jpg">
-        <button onclick="changePlayerModel()">Apply</button>
-    </div>
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
@@ -34,7 +29,7 @@
         let playerX = 50;
         let playerY = 50;
         const playerSize = 20;
-        let playerModelURL = "https://i.kym-cdn.com/editorials/icons/original/000/005/910/stcover.jpg";
+        const playerModelURL = "https://m.media-amazon.com/images/M/MV5BNjAzOGMxYjUtM2QxMy00NTBiLWI5NjEtNjI3OTcwMjQ0OTQ2XkEyXkFqcGdeQXVyMTE3MTc5NDA5._V1_FMjpg_UX1000_.jpg";
 
         // Player movement
         document.addEventListener("keydown", (event) => {
@@ -61,12 +56,6 @@
                 playerY = 0;
             }
         });
-
-        // Change player model URL
-        function changePlayerModel() {
-            const playerModelInput = document.getElementById("playerModel");
-            playerModelURL = playerModelInput.value;
-        }
 
         // Game loop
         function gameLoop() {
