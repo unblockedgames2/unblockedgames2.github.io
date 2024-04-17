@@ -29,7 +29,6 @@
         let playerX = 50;
         let playerY = 50;
         const playerSize = 20;
-        const playerModelURL = "https://m.media-amazon.com/images/M/MV5BNjAzOGMxYjUtM2QxMy00NTBiLWI5NjEtNjI3OTcwMjQ0OTQ2XkEyXkFqcGdeQXVyMTE3MTc5NDA5._V1_FMjpg_UX1000_.jpg";
 
         // Player movement
         document.addEventListener("keydown", (event) => {
@@ -57,17 +56,20 @@
             }
         });
 
-        // Game loop
+        /* 
+        You 
+        know 
+        what 
+        LOOP 
+        MOFO 
+        */
         function gameLoop() {
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw player model
-            const playerImage = new Image();
-            playerImage.src = playerModelURL;
-            playerImage.onload = () => {
-                ctx.drawImage(playerImage, playerX, playerY, playerSize, playerSize);
-            };
+            // Draw player
+            ctx.fillStyle = "blue";
+            ctx.fillRect(playerX, playerY, playerSize, playerSize);
 
             // Request next frame
             requestAnimationFrame(gameLoop);
