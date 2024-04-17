@@ -21,6 +21,11 @@
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div>
+        <label for="playerModel">Player Model URL:</label>
+        <input type="text" id="playerModel" value="https://i.kym-cdn.com/editorials/icons/original/000/005/910/stcover.jpg">
+        <button onclick="changePlayerModel()">Apply</button>
+    </div>
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
@@ -29,6 +34,7 @@
         let playerX = 50;
         let playerY = 50;
         const playerSize = 20;
+        let playerModelURL = "https://i.kym-cdn.com/editorials/icons/original/000/005/910/stcover.jpg";
 
         // Player movement
         document.addEventListener("keydown", (event) => {
@@ -56,14 +62,23 @@
             }
         });
 
+        // Change player model URL
+        function changePlayerModel() {
+            const playerModelInput = document.getElementById("playerModel");
+            playerModelURL = playerModelInput.value;
+        }
+
         // Game loop
         function gameLoop() {
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw player
-            ctx.fillStyle = "blue";
-            ctx.fillRect(playerX, playerY, playerSize, playerSize);
+            // Draw player model
+            const playerImage = new Image();
+            playerImage.src = playerModelURL;
+            playerImage.onload = () => {
+                ctx.drawImage(playerImage, playerX, playerY, playerSize, playerSize);
+            };
 
             // Request next frame
             requestAnimationFrame(gameLoop);
