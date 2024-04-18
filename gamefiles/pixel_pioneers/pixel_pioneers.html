@@ -29,6 +29,8 @@
         let playerX = 400;
         let playerY = 350;
         const playerSize = 20;
+        let coins = [];
+        let score = 0;
 
         // Player movement
         document.addEventListener("keydown", (event) => {
@@ -54,7 +56,43 @@
             } else if (playerY + playerSize > canvas.height) {
                 playerY = 0;
             }
+
+            // Check for coin collection
+            coins.forEach((coin, index) => {
+                if (
+                    playerX < coin.x + coin.size &&
+                    playerX + playerSize > coin.x &&
+                    playerY < coin.y + coin.size &&
+                    playerY + playerSize > coin.y
+                ) {
+                    coins.splice(index, 1);
+                    score++;
+                }
+            });
         });
+
+        // Generate random number between min and max
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+
+        // Spawn coins
+        function spawnCoins() {
+            setInterval(() => {
+                const coinSize = 10;
+                const coinX = getRandomNumber(0, canvas.width - coinSize);
+                const coinY = getRandomNumber(0, canvas.height - coinSize);
+                coins.push({ x: coinX, y: coinY, size: coinSize });
+            }, 2000); // Spawn a new coin every 2 seconds
+        }
+
+        // Draw coins
+        function drawCoins() {
+            coins.forEach((coin) => {
+                ctx.fillStyle = "yellow";
+                ctx.fillRect(coin.x, coin.y, coin.size, coin.size);
+            });
+        }
 
         function gameLoop() {
             // Clear canvas
@@ -64,12 +102,23 @@
             ctx.fillStyle = "blue";
             ctx.fillRect(playerX, playerY, playerSize, playerSize);
 
+            // Draw coins
+            drawCoins();
+
+            // Display score
+            ctx.fillStyle = "black";
+            ctx.font = "20px Arial";
+            ctx.fillText("Score: " + score, 10, 30);
+
             // Request next frame
             requestAnimationFrame(gameLoop);
         }
 
         // Start the game loop
         gameLoop();
+
+        // Start spawning coins
+        spawnCoins();
     </script>
 </body>
 </html>
