@@ -32,18 +32,36 @@
         let coins = [];
         let score = 0;
         const maxCoins = 10;
+        const keyState = {};
 
         // Player movement
         document.addEventListener("keydown", (event) => {
-            const key = event.key;
-            if (key === "ArrowUp") {
+            keyState[event.key] = true;
+
+            // Move diagonally if two arrow keys are pressed simultaneously
+            if (keyState["ArrowUp"] && keyState["ArrowLeft"]) {
                 playerY -= 5;
-            } else if (key === "ArrowDown") {
-                playerY += 5;
-            } else if (key === "ArrowLeft") {
                 playerX -= 5;
-            } else if (key === "ArrowRight") {
+            } else if (keyState["ArrowUp"] && keyState["ArrowRight"]) {
+                playerY -= 5;
                 playerX += 5;
+            } else if (keyState["ArrowDown"] && keyState["ArrowLeft"]) {
+                playerY += 5;
+                playerX -= 5;
+            } else if (keyState["ArrowDown"] && keyState["ArrowRight"]) {
+                playerY += 5;
+                playerX += 5;
+            } else {
+                // Move in single direction
+                if (keyState["ArrowUp"]) {
+                    playerY -= 5;
+                } else if (keyState["ArrowDown"]) {
+                    playerY += 5;
+                } else if (keyState["ArrowLeft"]) {
+                    playerX -= 5;
+                } else if (keyState["ArrowRight"]) {
+                    playerX += 5;
+                }
             }
 
             // Teleportation when crossing the boundaries
@@ -70,6 +88,11 @@
                     score++;
                 }
             });
+        });
+
+        // Clear key state when key is released
+        document.addEventListener("keyup", (event) => {
+            keyState[event.key] = false;
         });
 
         // Generate random number between min and max
