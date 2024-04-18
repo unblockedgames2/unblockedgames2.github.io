@@ -145,6 +145,8 @@
 
         // Update enemies position
         function updateEnemiesPosition() {
+            // Make Movement Faster
+            movePlayer();
             enemies.forEach((enemy) => {
                 const dx = playerX - enemy.x;
                 const dy = playerY - enemy.y;
@@ -157,6 +159,8 @@
 
         // Check collision with enemies
         function checkCollision() {
+            // Make Movement Faster
+            movePlayer();
             enemies.forEach((enemy) => {
                 if (
                     playerX < enemy.x + enemy.size &&
@@ -234,6 +238,9 @@
 
             // Check collision
             checkCollision();
+
+            // Make Movement Faster
+            movePlayer();
 
             // Request next frame
             requestAnimationFrame(gameLoop);
