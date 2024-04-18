@@ -149,7 +149,7 @@
                 const dx = playerX - enemy.x;
                 const dy = playerY - enemy.y;
                 const angle = Math.atan2(dy, dx);
-                const speed = 2; // Adjust speed as needed
+                const speed = 1.1; // Adjust speed as needed
                 enemy.x += speed * Math.cos(angle);
                 enemy.y += speed * Math.sin(angle);
             });
