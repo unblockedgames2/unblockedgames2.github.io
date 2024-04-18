@@ -31,6 +31,7 @@
         const playerSize = 20;
         let coins = [];
         let score = 0;
+        const maxCoins = 10;
 
         // Player movement
         document.addEventListener("keydown", (event) => {
@@ -79,10 +80,12 @@
         // Spawn coins
         function spawnCoins() {
             setInterval(() => {
-                const coinSize = 10;
-                const coinX = getRandomNumber(0, canvas.width - coinSize);
-                const coinY = getRandomNumber(0, canvas.height - coinSize);
-                coins.push({ x: coinX, y: coinY, size: coinSize });
+                if (coins.length < maxCoins) {
+                    const coinSize = 10;
+                    const coinX = getRandomNumber(0, canvas.width - coinSize);
+                    const coinY = getRandomNumber(0, canvas.height - coinSize);
+                    coins.push({ x: coinX, y: coinY, size: coinSize });
+                }
             }, 2000); // Spawn a new coin every 2 seconds
         }
 
