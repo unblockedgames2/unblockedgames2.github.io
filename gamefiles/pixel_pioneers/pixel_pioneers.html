@@ -21,6 +21,7 @@
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <button id="restartButton" style="position: absolute; top: 10px; left: 10px; display: none;">Restart</button>
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
@@ -30,8 +31,10 @@
         let playerY = 350;
         const playerSize = 20;
         let coins = [];
+        let enemies = [];
         let score = 0;
         const maxCoins = 10;
+        const maxEnemies = 5;
         const keyState = {};
 
         // Player movement
@@ -112,6 +115,18 @@
             }, 2000); // Spawn a new coin every 2 seconds
         }
 
+        // Spawn enemies
+        function spawnEnemies() {
+            setInterval(() => {
+                if (enemies.length < maxEnemies) {
+                    const enemySize = 10;
+                    const enemyX = getRandomNumber(0, canvas.width - enemySize);
+                    const enemyY = getRandomNumber(0, canvas.height - enemySize);
+                    enemies.push({ x: enemyX, y: enemyY, size: enemySize });
+                }
+            }, 3000); // Spawn a new enemy every 3 seconds
+        }
+
         // Draw coins
         function drawCoins() {
             coins.forEach((coin) => {
@@ -120,6 +135,69 @@
             });
         }
 
+        // Draw enemies
+        function drawEnemies() {
+            enemies.forEach((enemy) => {
+                ctx.fillStyle = "red";
+                ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+            });
+        }
+
+        // Check collision with enemies
+        function checkCollision() {
+            enemies.forEach((enemy) => {
+                if (
+                    playerX < enemy.x + enemy.size &&
+                    playerX + playerSize > enemy.x &&
+                    playerY < enemy.y + enemy.size &&
+                    playerY + playerSize > enemy.y
+                ) {
+                    gameOver();
+                }
+            });
+        }
+
+        // Game over
+        function gameOver() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "black";
+            ctx.font = "30px Arial";
+            ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 20);
+            document.getElementById("restartButton").style.display = "block";
+            clearInterval(coinsInterval);
+            clearInterval(enemiesInterval);
+            document.removeEventListener("keydown", movePlayer);
+        }
+
+        // Restart game
+        function restartGame() {
+            coins = [];
+            enemies = [];
+            score = 0;
+            playerX = 400;
+            playerY = 350;
+            document.getElementById("restartButton").style.display = "none";
+            spawnCoins();
+            spawnEnemies();
+            document.addEventListener("keydown", movePlayer);
+            gameLoop();
+        }
+
+        // Move player function
+        function movePlayer(event) {
+            const key = event.key;
+            if (key === "ArrowUp") {
+                playerY -= 5;
+            } else if (key === "ArrowDown") {
+                playerY += 5;
+            } else if (key === "ArrowLeft") {
+                playerX -= 5;
+            } else if (key === "ArrowRight") {
+                playerX += 5;
+            }
+        }
+
+        // Game loop
         function gameLoop() {
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -131,10 +209,16 @@
             // Draw coins
             drawCoins();
 
+            // Draw enemies
+            drawEnemies();
+
             // Display score
             ctx.fillStyle = "black";
             ctx.font = "20px Arial";
             ctx.fillText("Score: " + score, 10, 30);
+
+            // Check collision
+            checkCollision();
 
             // Request next frame
             requestAnimationFrame(gameLoop);
@@ -144,7 +228,13 @@
         gameLoop();
 
         // Start spawning coins
-        spawnCoins();
+        const coinsInterval = spawnCoins();
+
+        // Start spawning enemies
+        const enemiesInterval = spawnEnemies();
+
+        // Add event listener for restart button
+        document.getElementById("restartButton").addEventListener("click", restartGame);
     </script>
 </body>
 </html>
