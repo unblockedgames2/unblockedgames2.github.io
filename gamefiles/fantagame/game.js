@@ -17,7 +17,7 @@ const canvas = document.getElementById("gameCanvas");
         let score = 0;
 
         function drawBird(color) {
-            if (color !== "yellow") {
+            if (color === null) {
                 color === "yellow";
                 }
             ctx.fillStyle = color;
