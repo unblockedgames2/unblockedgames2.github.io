@@ -7,7 +7,7 @@ const canvas = document.getElementById("gameCanvas");
             radius: 10,
             gravity: 0.6,
             velocity: 0,
-            jump: -12
+            jump: -6
         };
 
         let pipes = [];
