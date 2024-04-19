@@ -16,8 +16,11 @@ const canvas = document.getElementById("gameCanvas");
         const pipeSpeed = 2.80;
         let score = 0;
 
-        function drawBird() {
-            ctx.fillStyle = "yellow";
+        function drawBird(color) {
+            if (color !== "yellow") {
+                color === "yellow";
+                }
+            ctx.fillStyle = color;
             ctx.beginPath();
             ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
             ctx.fill();
@@ -75,7 +78,7 @@ const canvas = document.getElementById("gameCanvas");
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawBird();
+            drawBird("yellow");
             pipes.forEach(pipe => drawPipe(pipe.x, pipe.height));
             drawScore();
         }
