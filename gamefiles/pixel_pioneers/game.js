@@ -226,6 +226,9 @@ function gameOver() {
     clearInterval(coinsInterval);
     clearInterval(enemiesInterval);
     document.removeEventListener("keydown", movePlayer);
+    if (event.key) { // Spacebar for shooting
+        restartGame();
+    }
 }
 
 // Restart game
