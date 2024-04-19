@@ -12,8 +12,8 @@ const canvas = document.getElementById("gameCanvas");
 
         let pipes = [];
         const pipeWidth = 50;
-        const pipeGap = 150;
-        const pipeSpeed = 2;
+        const pipeGap = 275;
+        const pipeSpeed = 2.80;
         let score = 0;
 
         function drawBird() {
