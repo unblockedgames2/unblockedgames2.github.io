@@ -80,7 +80,7 @@ document.addEventListener("keydown", (event) => {
 
 // Shooting functionality
 document.addEventListener("keyup", (event) => {
-    if (event.key === "Space") { // Spacebar for shooting
+    if (event.keyCode === 32) { // Spacebar for shooting
         shoot();
     }
 });
