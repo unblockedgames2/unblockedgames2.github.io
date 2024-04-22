@@ -15,7 +15,6 @@ const ver = "v1.0.0"
 const maxCoins = 10;
 const maxEnemies = 5;
 const keyState = {};
-let log1 = "<a href='https://unblockedgames2.github.io/logs/pixel_pioneers/log1.html'>" + log1 + "</a>";
 
 // Player movement
 document.addEventListener("keydown", (event) => {
