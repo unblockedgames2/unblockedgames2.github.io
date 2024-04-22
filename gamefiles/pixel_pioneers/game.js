@@ -86,6 +86,8 @@ document.addEventListener("keyup", (event) => {
     }
 });
 
+gameLoop();
+
 // Shoot function
 function shoot() {
     let bulletX = playerX + playerSize / 2; // Starting position of the bullet (center of the player)
