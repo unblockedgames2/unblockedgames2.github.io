@@ -279,7 +279,7 @@ function gameLoop() {
     // Display score
     ctx.fillStyle = "black";
     ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score + "v1.0.0", 10, 30);
+    ctx.fillText("Score: " + score + " v1.0.0", 10, 30);
 
     // Check collision
     checkCollision();
