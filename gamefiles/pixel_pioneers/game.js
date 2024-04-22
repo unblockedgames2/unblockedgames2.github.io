@@ -10,6 +10,7 @@ let gunLength = 25; // Length of the gun
 let coins = [];
 let enemies = [];
 let score = 0;
+const ver = "v1.0.0"
 const maxCoins = 10;
 const maxEnemies = 5;
 const keyState = {};
@@ -279,7 +280,7 @@ function gameLoop() {
     // Display score
     ctx.fillStyle = "black";
     ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score + " v1.0.0", 10, 30);
+    ctx.fillText("Score: " + score + " " + ver, 10, 30);
 
     // Check collision
     checkCollision();
@@ -323,6 +324,3 @@ const coinsInterval = spawnCoins();
 
 // Start spawning enemies
 const enemiesInterval = spawnEnemies();
-
-// Add event listener for restart button
-document.getElementById("restartButton").addEventListener("click", restartGame);
