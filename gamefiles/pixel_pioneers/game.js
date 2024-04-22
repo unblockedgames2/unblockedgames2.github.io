@@ -225,10 +225,13 @@ function gameOver() {
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
     ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 20);
-    interval.wait(1)
-    window.alert("You Died, Game Over!");
+    document.getElementById("restartButton").style.display = "block";
+    clearInterval(coinsInterval);
+    clearInterval(enemiesInterval);
     document.removeEventListener("keydown", movePlayer);
-    restartGame();
+    if (event.key) { // Spacebar for shooting
+        restartGame();
+    }
 }
 
 // Restart game
@@ -327,3 +330,6 @@ const coinsInterval = spawnCoins();
 
 // Start spawning enemies
 const enemiesInterval = spawnEnemies();
+
+// Add event listener for restart button
+document.getElementById("restartButton").addEventListener("click", restartGame);
