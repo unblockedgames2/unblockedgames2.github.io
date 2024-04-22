@@ -225,7 +225,7 @@ function gameOver() {
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
     ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 20);
-    interval.wait(500)
+    interval.wait(1)
     window.alert("You Died, Game Over!");
     document.removeEventListener("keydown", movePlayer);
     restartGame();
