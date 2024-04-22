@@ -218,11 +218,11 @@ function checkCollision() {
 
 // Game over
 function gameOver() {
-    window.alert("You Died, Game Over!");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
     ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 20);
+    window.alert("You Died, Game Over!");
     document.removeEventListener("keydown", movePlayer);
     restartGame();
 }
