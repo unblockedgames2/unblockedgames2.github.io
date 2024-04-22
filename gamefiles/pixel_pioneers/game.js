@@ -218,7 +218,7 @@ function checkCollision() {
 
 // Game over
 function gameOver() {
-    alert("You Died, Game Over!");
+    window.alert("You Died, Game Over!");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
