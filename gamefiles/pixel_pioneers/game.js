@@ -223,13 +223,8 @@ function gameOver() {
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
     ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 20);
-    document.getElementById("restartButton").style.display = "block";
-    clearInterval(coinsInterval);
-    clearInterval(enemiesInterval);
     document.removeEventListener("keydown", movePlayer);
-    if (event.key) { // Spacebar for shooting
-        restartGame();
-    }
+    restartGame();
 }
 
 // Restart game
