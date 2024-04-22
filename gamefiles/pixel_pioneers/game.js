@@ -2,6 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
+let log1 = "Fix gameover screen";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "right"; // Initial direction of the player
@@ -286,7 +287,7 @@ function gameLoop() {
     // Display score
     ctx.fillStyle = "black";
     ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score + ", " + ver, 10, 30);
+    ctx.fillText("Score: " + score + ", " + ver + ", log: " + log1, 10, 30);
 
     // Check collision
     checkCollision();
