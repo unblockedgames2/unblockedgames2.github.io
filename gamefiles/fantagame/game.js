@@ -15,6 +15,7 @@ const canvas = document.getElementById("gameCanvas");
         const pipeGap = 275;
         const pipeSpeed = 2.80;
         let score = 0;
+        let ver = "1.0.1";
 
         function drawBird(color) {
             if (color === null) {
@@ -35,7 +36,7 @@ const canvas = document.getElementById("gameCanvas");
         function drawScore() {
             ctx.fillStyle = "black";
             ctx.font = "24px Arial";
-            ctx.fillText("Score: " + score, 10, 30);
+            ctx.fillText("Score: " + score + ", " + ver, 10, 30);
         }
 
         function update() {
