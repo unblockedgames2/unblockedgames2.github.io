@@ -1,13 +1,9 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
 // Game variables
 let log1 = "Add Favorites Section In Menu";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
 let playerSize = 20;
-let gunLength = 25; // Length of the gun
 let coins = [];
 let enemies = [];
 let score = 0;
@@ -16,53 +12,64 @@ const maxCoins = 10;
 const maxEnemies = 5;
 const keyState = {};
 
-// Player movement
-document.addEventListener("keydown", (event) => {
-    keyState[event.key] = true;
+// Create a Pixi.js application instance
+const app = new PIXI.Application({ width: 800, height: 600 });
+document.body.appendChild(app.view);
 
-    // Move diagonally if two arrow keys are pressed simultaneously
-    if (keyState["ArrowUp"] && keyState["ArrowLeft"]) {
+// Load images for player, coins, and enemies
+PIXI.Loader.shared
+    .add('player', 'player.png')
+    .add('coin', 'coin.png')
+    .add('enemy', 'enemy.png')
+    .load(setup);
+
+function setup() {
+    // Create player sprite
+    const player = new PIXI.Sprite(PIXI.Loader.shared.resources['player'].texture);
+    player.position.set(playerX, playerY);
+    app.stage.addChild(player);
+
+    // Set up keyboard input handling
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    // Start game loop
+    app.ticker.add(gameLoop);
+}
+
+function handleKeyDown(event) {
+    keyState[event.key] = true;
+}
+
+function handleKeyUp(event) {
+    keyState[event.key] = false;
+}
+
+function gameLoop(delta) {
+    // Update player position based on keyState
+    if (keyState["ArrowUp"]) {
         playerY -= 5;
-        playerX -= 5;
-        playerDirection = "leftup";
-    } else if (keyState["ArrowUp"] && keyState["ArrowRight"]) {
-        playerY -= 5;
-        playerX += 5;
-        playerDirection = "rightup";
-    } else if (keyState["ArrowDown"] && keyState["ArrowLeft"]) {
+        playerDirection = "up";
+    } else if (keyState["ArrowDown"]) {
         playerY += 5;
+        playerDirection = "down";
+    } else if (keyState["ArrowLeft"]) {
         playerX -= 5;
-        playerDirection = "leftdown";
-    } else if (keyState["ArrowDown"] && keyState["ArrowRight"]) {
-        playerY += 5;
+        playerDirection = "left";
+    } else if (keyState["ArrowRight"]) {
         playerX += 5;
-        playerDirection = "rightdown";
-    } else {
-        // Move in single direction
-        if (keyState["ArrowUp"]) {
-            playerY -= 5;
-            playerDirection = "up";
-        } else if (keyState["ArrowDown"]) {
-            playerY += 5;
-            playerDirection = "down";
-        } else if (keyState["ArrowLeft"]) {
-            playerX -= 5;
-            playerDirection = "left";
-        } else if (keyState["ArrowRight"]) {
-            playerX += 5;
-            playerDirection = "right";
-        }
+        playerDirection = "right";
     }
 
     // Teleportation when crossing the boundaries
     if (playerX < 0) {
-        playerX = canvas.width - playerSize;
-    } else if (playerX + playerSize > canvas.width) {
+        playerX = app.renderer.width - playerSize;
+    } else if (playerX + playerSize > app.renderer.width) {
         playerX = 0;
     }
     if (playerY < 0) {
-        playerY = canvas.height - playerSize;
-    } else if (playerY + playerSize > canvas.height) {
+        playerY = app.renderer.height - playerSize;
+    } else if (playerY + playerSize > app.renderer.height) {
         playerY = 0;
     }
 
@@ -76,125 +83,48 @@ document.addEventListener("keydown", (event) => {
         ) {
             coins.splice(index, 1);
             score++;
+            app.stage.removeChild(coin.sprite);
         }
     });
-});
 
-// Shooting functionality
-document.addEventListener("keyup", (event) => {
-    if (event.keyCode === 32) { // Spacebar for shooting
-        shoot();
-    }
-});
+    // Update enemies position
+    updateEnemiesPosition();
 
-gameLoop();
+    // Check collision
+    checkCollision();
 
-// Shoot function
-function shoot() {
-    let bulletX = playerX + playerSize / 2; // Starting position of the bullet (center of the player)
-    let bulletY = playerY + playerSize / 2;
-    let bulletSpeed = 10; // Adjust bullet speed as needed
-
-    // Calculate the direction of the bullet based on the player's last movement direction
-    let dx = 0;
-    let dy = 0;
-    if (playerDirection === "up") {
-        dy = -1;
-    } else if (playerDirection === "down") {
-        dy = 1;
-    } else if (playerDirection === "left") {
-        dx = -1;
-    } else if (playerDirection === "right") {
-        dx = 1;
-    } else if (playerDirection === "leftup") {
-        dx = -1;
-        dy = -1;
-    } else if (playerDirection === "rightup") {
-        dx = 1;
-        dy = -1;
-    } else if (playerDirection === "leftdown") {
-        dx = -1;
-        dy = 1;
-    } else if (playerDirection === "rightdown") {
-        dx = 1;
-        dy = 1;
-    }
-
-    // Move the bullet
-    let interval = setInterval(() => {
-        ctx.clearRect(bulletX, bulletY, 2, 2); // Clear the previous position of the bullet
-        bulletX += dx * bulletSpeed;
-        bulletY += dy * bulletSpeed;
-        ctx.fillRect(bulletX, bulletY, 2, 2); // Draw the bullet
-        if (bulletX < 0 || bulletX > canvas.width || bulletY < 0 || bulletY > canvas.height) {
-            clearInterval(interval); // Stop moving the bullet if it goes out of the canvas
-        }
-        // Check collision with enemies
-        enemies.forEach((enemy, index) => {
-            if (
-                bulletX < enemy.x + enemy.size &&
-                bulletX > enemy.x &&
-                bulletY < enemy.y + enemy.size &&
-                bulletY > enemy.y
-            ) {
-                enemies.splice(index, 1);
-                clearInterval(interval); // Stop moving the bullet if it hits an enemy
-            }
-        });
-    }, 20); // Adjust bullet interval for smoother animation
+    // Update score text
+    scoreText.text = "Score: " + score + ", " + ver + ", log: " + log1;
 }
 
-// Clear key state when key is released
-document.addEventListener("keyup", (event) => {
-    keyState[event.key] = false;
-});
-
-// Generate random number between min and max
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-// Spawn coins
 function spawnCoins() {
     setInterval(() => {
         if (coins.length < maxCoins) {
             const coinSize = 10;
-            const coinX = getRandomNumber(0, canvas.width - coinSize);
-            const coinY = getRandomNumber(0, canvas.height - coinSize);
-            coins.push({ x: coinX, y: coinY, size: coinSize });
+            const coinX = getRandomNumber(0, app.renderer.width - coinSize);
+            const coinY = getRandomNumber(0, app.renderer.height - coinSize);
+            const coin = new PIXI.Sprite(PIXI.Loader.shared.resources['coin'].texture);
+            coin.position.set(coinX, coinY);
+            app.stage.addChild(coin);
+            coins.push({ x: coinX, y: coinY, size: coinSize, sprite: coin });
         }
     }, 2000); // Spawn a new coin every 2 seconds
 }
 
-// Spawn enemies
 function spawnEnemies() {
     setInterval(() => {
         if (enemies.length < maxEnemies) {
             const enemySize = 10;
-            const enemyX = getRandomNumber(0, canvas.width - enemySize);
-            const enemyY = getRandomNumber(0, canvas.height - enemySize);
-            enemies.push({ x: enemyX, y: enemyY, size: enemySize });
+            const enemyX = getRandomNumber(0, app.renderer.width - enemySize);
+            const enemyY = getRandomNumber(0, app.renderer.height - enemySize);
+            const enemy = new PIXI.Sprite(PIXI.Loader.shared.resources['enemy'].texture);
+            enemy.position.set(enemyX, enemyY);
+            app.stage.addChild(enemy);
+            enemies.push({ x: enemyX, y: enemyY, size: enemySize, sprite: enemy });
         }
     }, 3000); // Spawn a new enemy every 3 seconds
 }
 
-// Draw coins
-function drawCoins() {
-    coins.forEach((coin) => {
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(coin.x, coin.y, coin.size, coin.size);
-    });
-}
-
-// Draw enemies
-function drawEnemies() {
-    enemies.forEach((enemy) => {
-        ctx.fillStyle = "red";
-        ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
-    });
-}
-
-// Update enemies position
 function updateEnemiesPosition() {
     enemies.forEach((enemy) => {
         const dx = playerX - enemy.x;
@@ -206,7 +136,6 @@ function updateEnemiesPosition() {
     });
 }
 
-// Check collision with enemies
 function checkCollision() {
     enemies.forEach((enemy) => {
         if (
@@ -220,118 +149,44 @@ function checkCollision() {
     });
 }
 
-// Game over
 function gameOver() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "black";
-    ctx.font = "30px Arial";
-    ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 20);
-    document.getElementById("restartButton").style.display = "block";
+    // Display game over message and restart button
+    const gameOverText = new PIXI.Text('Game Over', { fontFamily: 'Arial', fontSize: 30, fill: 0x000000 });
+    gameOverText.position.set(app.renderer.width / 2 - 100, app.renderer.height / 2 - 20);
+    app.stage.addChild(gameOverText);
+    const restartButton = new PIXI.Text('Restart', { fontFamily: 'Arial', fontSize: 20, fill: 0x000000 });
+    restartButton.position.set(app.renderer.width / 2 - 50, app.renderer.height / 2 + 20);
+    restartButton.interactive = true;
+    restartButton.buttonMode = true;
+    restartButton.on('pointerdown', restartGame);
+    app.stage.addChild(restartButton);
+    // Clear intervals
     clearInterval(coinsInterval);
     clearInterval(enemiesInterval);
-    document.removeEventListener("keydown", movePlayer);
-    if (event.key) { // Spacebar for shooting
-        restartGame();
-    }
 }
 
-// Restart game
 function restartGame() {
+    // Reset game variables and remove game over message and restart button
+    app.stage.removeChildren();
     coins = [];
     enemies = [];
     score = 0;
     playerX = 400;
     playerY = 350;
-    document.getElementById("restartButton").style.display = "none";
     spawnCoins();
     spawnEnemies();
-    document.addEventListener("keydown", movePlayer);
-    gameLoop();
 }
 
-// Move player function
-function movePlayer(event) {
-    const key = event.key;
-    if (key === "ArrowUp") {
-        playerY -= 5;
-    } else if (key === "ArrowDown") {
-        playerY += 5;
-    } else if (key === "ArrowLeft") {
-        playerX -= 5;
-    } else if (key === "ArrowRight") {
-        playerX += 5;
-    }
+// Utility function to get random number
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// Game loop
-function gameLoop() {
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw player
-    ctx.fillStyle = "blue";
-    ctx.fillRect(playerX, playerY, playerSize, playerSize);
-
-    // Draw gun
-    drawGun();
-
-    // Draw coins
-    drawCoins();
-
-    // Update enemies position
-    updateEnemiesPosition();
-
-    // Draw enemies
-    drawEnemies();
-
-    // Display score
-    ctx.fillStyle = "black";
-    ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score + ", " + ver + ", log: " + log1, 10, 30);
-
-
-    // Check collision
-    checkCollision();
-
-    // Request next frame
-    requestAnimationFrame(gameLoop);
-}
-
-// Draw the gun
-function drawGun() {
-    ctx.beginPath();
-    ctx.moveTo(playerX + playerSize / 2, playerY + playerSize / 2); // Start position of the gun (center of the player)
-    // End position of the gun based on the player's last movement direction
-    if (playerDirection === "up") {
-        ctx.lineTo(playerX + playerSize / 2, playerY);
-    } else if (playerDirection === "down") {
-        ctx.lineTo(playerX + playerSize / 2, playerY + playerSize);
-    } else if (playerDirection === "left") {
-        ctx.lineTo(playerX, playerY + playerSize / 2);
-    } else if (playerDirection === "right") {
-        ctx.lineTo(playerX + playerSize, playerY + playerSize / 2);
-    } else if (playerDirection === "leftup") {
-        ctx.lineTo(playerX, playerY);
-    } else if (playerDirection === "rightup") {
-        ctx.lineTo(playerX + playerSize, playerY);
-    } else if (playerDirection === "leftdown") {
-        ctx.lineTo(playerX, playerY + playerSize);
-    } else if (playerDirection === "rightdown") {
-        ctx.lineTo(playerX + playerSize, playerY + playerSize);
-    }
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-}
-
-// Start the game loop
-gameLoop();
-
-// Start spawning coins
+// Start spawning coins and enemies
 const coinsInterval = spawnCoins();
-
-// Start spawning enemies
 const enemiesInterval = spawnEnemies();
 
-// Add event listener for restart button
-document.getElementById("restartButton").addEventListener("click", restartGame);
+// Display score
+const scoreText = new PIXI.Text("Score: " + score + ", " + ver + ", log: " + log1, { fontFamily: 'Arial', fontSize: 20, fill: 0x000000 });
+scoreText.position.set(10, 30);
+app.stage.addChild(scoreText);
