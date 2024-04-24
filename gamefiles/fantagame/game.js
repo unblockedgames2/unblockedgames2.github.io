@@ -15,7 +15,7 @@ const canvas = document.getElementById("gameCanvas");
         const pipeGap = 275;
         const pipeSpeed = 2.80;
         let score = 0;
-        let ver = "1.0.1";
+        let ver = "1.0.3";
 
         function drawBird(color) {
             if (color === null) {
