@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
-let log1 = "Fix Shooting 2";
+let log1 = "Fix Shooting 3";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
@@ -11,7 +11,7 @@ let gunLength = 25; // Length of the gun
 let coins = [];
 let enemies = [];
 let score = 0;
-const ver = "v1.0.5"
+const ver = "v1.0.6"
 const maxCoins = 10;
 const maxEnemies = 5;
 const keyState = {};
@@ -96,7 +96,7 @@ function shoot() {
     let bulletX = playerX + playerSize / 2; // Starting position of the bullet (center of the player)
     let bulletY = playerY + playerSize / 2;
     let bulletSize = 6; // Increased size of the bullet hitbox
-    let bulletSpeed = 10; // Adjust bullet speed as needed
+    let bulletSpeed = 5; // Adjust bullet speed as needed
 
     // Calculate the direction of the bullet based on the player's last movement direction
     let dx = 0;
