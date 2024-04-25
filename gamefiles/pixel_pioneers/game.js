@@ -51,6 +51,8 @@ document.addEventListener("keydown", (event) => {
         } else if (keyState["ArrowRight"]) {
             playerX += 5;
             playerDirection = "right";
+        } else if (keyState["Space"]) {
+            shoot();
         }
     }
 
@@ -78,13 +80,6 @@ document.addEventListener("keydown", (event) => {
             score++;
         }
     });
-});
-
-// Shooting functionality
-document.addEventListener("keyup", (event) => {
-    if (event.keyCode === 32) { // Spacebar for shooting
-        shoot();
-    }
 });
 
 gameLoop();
