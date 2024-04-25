@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
-const log1 = "Fix Restart Button";
+const log1 = "Make Log Constant";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
@@ -51,8 +51,6 @@ document.addEventListener("keydown", (event) => {
         } else if (keyState["ArrowRight"]) {
             playerX += 5;
             playerDirection = "right";
-        } else if (keyState["Space"]) {
-            shoot();
         }
     }
 
@@ -80,6 +78,13 @@ document.addEventListener("keydown", (event) => {
             score++;
         }
     });
+});
+
+// Shooting functionality
+document.addEventListener("keyup", (event) => {
+    if (event.keyCode === 32) { // Spacebar for shooting
+        shoot();
+    }
 });
 
 gameLoop();
