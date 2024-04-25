@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
-let log1 = "Add Favorites Section In Menu";
+let log1 = "Fix Gameover Button";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
