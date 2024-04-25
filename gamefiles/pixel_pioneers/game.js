@@ -19,6 +19,7 @@ const keyState = {};
 // Button Pressed
 document.addEventListener("keydown", (event) => {
     keyState[event.key] = true;
+});
 document.addEventListener("keyup", (event) => {
     keyState[event.key] = false; // Clear key state when key is released
 
@@ -29,7 +30,8 @@ document.addEventListener("keyup", (event) => {
     }
 });
 
-    // Move diagonally if two arrow keys are pressed simultaneously
+// Move diagonally if two arrow keys are pressed simultaneously
+function handleDiagonalMovement() {
     if (keyState["ArrowUp"] && keyState["ArrowLeft"]) {
         playerY -= 5;
         playerX -= 5;
@@ -46,24 +48,28 @@ document.addEventListener("keyup", (event) => {
         playerY += 5;
         playerX += 5;
         playerDirection = "rightdown";
-    } else {
-        // Move in single direction
-        if (keyState["ArrowUp"]) {
-            playerY -= 5;
-            playerDirection = "up";
-        } else if (keyState["ArrowDown"]) {
-            playerY += 5;
-            playerDirection = "down";
-        } else if (keyState["ArrowLeft"]) {
-            playerX -= 5;
-            playerDirection = "left";
-        } else if (keyState["ArrowRight"]) {
-            playerX += 5;
-            playerDirection = "right";
-        }
     }
+}
 
-    // Teleportation when crossing the boundaries
+// Move in single direction
+function handleSingleDirectionMovement() {
+    if (keyState["ArrowUp"]) {
+        playerY -= 5;
+        playerDirection = "up";
+    } else if (keyState["ArrowDown"]) {
+        playerY += 5;
+        playerDirection = "down";
+    } else if (keyState["ArrowLeft"]) {
+        playerX -= 5;
+        playerDirection = "left";
+    } else if (keyState["ArrowRight"]) {
+        playerX += 5;
+        playerDirection = "right";
+    }
+}
+
+// Check for boundary teleportation
+function handleBoundaryTeleportation() {
     if (playerX < 0) {
         playerX = canvas.width - playerSize;
     } else if (playerX + playerSize > canvas.width) {
@@ -74,8 +80,10 @@ document.addEventListener("keyup", (event) => {
     } else if (playerY + playerSize > canvas.height) {
         playerY = 0;
     }
+}
 
-    // Check for coin collection
+// Check for coin collection
+function checkCoinCollection() {
     coins.forEach((coin, index) => {
         if (
             playerX < coin.x + coin.size &&
@@ -87,9 +95,47 @@ document.addEventListener("keyup", (event) => {
             score++;
         }
     });
-});
+}
 
-gameLoop();
+// Game loop
+function gameLoop() {
+    handleDiagonalMovement();
+    handleSingleDirectionMovement();
+    handleBoundaryTeleportation();
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw walls
+    drawWalls();
+
+    // Draw player
+    ctx.fillStyle = "blue";
+    ctx.fillRect(playerX, playerY, playerSize, playerSize);
+
+    // Draw gun
+    drawGun();
+
+    // Draw coins
+    drawCoins();
+
+    // Update enemies position
+    updateEnemiesPosition();
+
+    // Draw enemies
+    drawEnemies();
+
+    // Display score
+    ctx.fillStyle = "black";
+    ctx.font = "20px Arial";
+    ctx.fillText("Score: " + score + ", " + ver + ", log: " + log1, 10, 30);
+
+    // Check collision
+    checkCollision();
+
+    // Request next frame
+    requestAnimationFrame(gameLoop);
+}
 
 // Shooting function
 function shoot() {
@@ -217,6 +263,7 @@ function checkCollision() {
         }
     });
 }
+
 // Game over
 let gameOverFlag = false; // Add a flag to indicate game over
 function gameOver() {
@@ -293,42 +340,6 @@ function drawWalls() {
         ctx.fillStyle = "gray";
         ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
     });
-}
-
-// Game loop
-function gameLoop() {
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw walls
-    drawWalls();
-
-    // Draw player
-    ctx.fillStyle = "blue";
-    ctx.fillRect(playerX, playerY, playerSize, playerSize);
-
-    // Draw gun
-    drawGun();
-
-    // Draw coins
-    drawCoins();
-
-    // Update enemies position
-    updateEnemiesPosition();
-
-    // Draw enemies
-    drawEnemies();
-
-    // Display score
-    ctx.fillStyle = "black";
-    ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score + ", " + ver + ", log: " + log1, 10, 30);
-
-    // Check collision
-    checkCollision();
-
-    // Request next frame
-    requestAnimationFrame(gameLoop);
 }
 
 // Function to check collision between two rectangles
