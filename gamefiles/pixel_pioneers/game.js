@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
-const log1 = "Make Log Constant";
+const log1 = "Undo Bullet Fix";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
