@@ -265,12 +265,12 @@ function gameLoop() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Draw gun
+    drawGun();
+
     // Draw player
     ctx.fillStyle = "blue";
     ctx.fillRect(playerX, playerY, playerSize, playerSize);
-
-    // Draw gun
-    drawGun();
 
     // Draw coins
     drawCoins();
