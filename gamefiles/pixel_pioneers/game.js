@@ -91,10 +91,11 @@ document.addEventListener("keyup", (event) => {
 
 gameLoop();
 
-// Shoot function
+// Shooting function
 function shoot() {
     let bulletX = playerX + playerSize / 2; // Starting position of the bullet (center of the player)
     let bulletY = playerY + playerSize / 2;
+    let bulletSize = 6; // Increased size of the bullet hitbox
     let bulletSpeed = 10; // Adjust bullet speed as needed
 
     // Calculate the direction of the bullet based on the player's last movement direction
@@ -124,10 +125,10 @@ function shoot() {
 
     // Move the bullet
     let interval = setInterval(() => {
-        ctx.clearRect(bulletX, bulletY, 2, 2); // Clear the previous position of the bullet
+        ctx.clearRect(bulletX - bulletSize / 2, bulletY - bulletSize / 2, bulletSize, bulletSize); // Clear the previous position of the bullet
         bulletX += dx * bulletSpeed;
         bulletY += dy * bulletSpeed;
-        ctx.fillRect(bulletX, bulletY, 2, 2); // Draw the bullet
+        ctx.fillRect(bulletX - bulletSize / 2, bulletY - bulletSize / 2, bulletSize, bulletSize); // Draw the bullet with increased hitbox size
         if (bulletX < 0 || bulletX > canvas.width || bulletY < 0 || bulletY > canvas.height) {
             clearInterval(interval); // Stop moving the bullet if it goes out of the canvas
         }
