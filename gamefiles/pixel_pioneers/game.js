@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
-let log1 = "Fix Shooting 3";
+let log1 = "S M O O T H movement";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
@@ -54,16 +54,16 @@ function handleDiagonalMovement() {
 // Move in single direction
 function handleSingleDirectionMovement() {
     if (keyState["ArrowUp"]) {
-        playerY -= 5;
+        playerY -= 2.5;
         playerDirection = "up";
     } else if (keyState["ArrowDown"]) {
-        playerY += 5;
+        playerY += 2.5;
         playerDirection = "down";
     } else if (keyState["ArrowLeft"]) {
-        playerX -= 5;
+        playerX -= 2.5;
         playerDirection = "left";
     } else if (keyState["ArrowRight"]) {
-        playerX += 5;
+        playerX += 2.5;
         playerDirection = "right";
     }
 }
