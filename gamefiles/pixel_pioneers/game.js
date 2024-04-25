@@ -81,9 +81,12 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Shooting functionality
+// Shooting functionality
 document.addEventListener("keyup", (event) => {
     if (event.keyCode === 32) { // Spacebar for shooting
-        shoot();
+        if (!gameOverFlag) { // Only allow shooting if the game is not over
+            shoot();
+        }
     }
 });
 
@@ -219,9 +222,10 @@ function checkCollision() {
         }
     });
 }
-
 // Game over
+let gameOverFlag = false; // Add a flag to indicate game over
 function gameOver() {
+    gameOverFlag = true; // Set the game over flag
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
@@ -230,13 +234,11 @@ function gameOver() {
     clearInterval(coinsInterval);
     clearInterval(enemiesInterval);
     document.removeEventListener("keydown", movePlayer);
-    if (event.key) { // Spacebar for shooting
-        restartGame();
-    }
 }
 
 // Restart game
 function restartGame() {
+    gameOverFlag = false; // Reset the game over flag
     coins = [];
     enemies = [];
     score = 0;
@@ -247,6 +249,7 @@ function restartGame() {
     spawnEnemies();
     gameLoop();
 }
+
 
 // Move player function
 function movePlayer(event) {
