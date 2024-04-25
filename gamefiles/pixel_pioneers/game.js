@@ -147,9 +147,15 @@ function shoot() {
     }, 20); // Adjust bullet interval for smoother animation
 }
 
-// Clear key state when key is released
+// Shooting functionality
 document.addEventListener("keyup", (event) => {
-    keyState[event.key] = false;
+    keyState[event.key] = false; // Clear key state when key is released
+
+    if (event.keyCode === 32) { // Spacebar for shooting
+        if (!gameOverFlag) { // Only allow shooting if the game is not over
+            shoot();
+        }
+    }
 });
 
 // Generate random number between min and max
