@@ -226,15 +226,13 @@ function gameOver() {
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
     ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2 - 20);
-    const restartButton = document.createElement("button");
-    restartButton.textContent = "Restart";
-    restartButton.id = "restartButton";
-    restartButton.style.position = "absolute";
-    restartButton.style.top = "50%";
-    restartButton.style.left = "50%";
-    restartButton.style.transform = "translate(-50%, -50%)";
-    restartButton.addEventListener("click", restartGame);
-    document.body.appendChild(restartButton);
+    document.getElementById("restartButton").style.display = "block";
+    clearInterval(coinsInterval);
+    clearInterval(enemiesInterval);
+    document.removeEventListener("keydown", movePlayer);
+    if (event.key) { // Spacebar for shooting
+        restartGame();
+    }
 }
 
 // Restart game
