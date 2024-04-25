@@ -249,15 +249,50 @@ function restartGame() {
 // Move player function
 function movePlayer(event) {
     const key = event.key;
+
+    // Temporary variables to hold the new position
+    let newX = playerX;
+    let newY = playerY;
+
     if (key === "ArrowUp") {
-        playerY -= 5;
+        newY -= 5;
     } else if (key === "ArrowDown") {
-        playerY += 5;
+        newY += 5;
     } else if (key === "ArrowLeft") {
-        playerX -= 5;
+        newX -= 5;
     } else if (key === "ArrowRight") {
-        playerX += 5;
+        newX += 5;
     }
+
+    // Check collision with walls
+    const playerRect = { x: newX, y: newY, width: playerSize, height: playerSize };
+    let collided = false;
+    walls.forEach((wall) => {
+        const wallRect = { x: wall.x, y: wall.y, width: wall.width, height: wall.height };
+        if (checkRectCollision(playerRect, wallRect)) {
+            collided = true;
+        }
+    });
+
+    // Update player position if there's no collision
+    if (!collided) {
+        playerX = newX;
+        playerY = newY;
+    }
+}
+
+const walls = [
+    { x: 200, y: 100, width: 20, height: 200 },
+    { x: 400, y: 50, width: 20, height: 150 },
+    // Add more walls as needed
+];
+
+// Draw walls
+function drawWalls() {
+    walls.forEach((wall) => {
+        ctx.fillStyle = "gray";
+        ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+    });
 }
 
 // Game loop
@@ -265,12 +300,15 @@ function gameLoop() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw gun
-    drawGun();
+    // Draw walls
+    drawWalls();
 
     // Draw player
     ctx.fillStyle = "blue";
     ctx.fillRect(playerX, playerY, playerSize, playerSize);
+
+    // Draw gun
+    drawGun();
 
     // Draw coins
     drawCoins();
@@ -292,6 +330,17 @@ function gameLoop() {
     // Request next frame
     requestAnimationFrame(gameLoop);
 }
+
+// Function to check collision between two rectangles
+function checkRectCollision(rect1, rect2) {
+    return (
+        rect1.x < rect2.x + rect2.width &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.y + rect1.height > rect2.y
+    );
+}
+
 
 // Draw the gun
 function drawGun() {
