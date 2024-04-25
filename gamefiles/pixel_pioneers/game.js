@@ -33,20 +33,20 @@ document.addEventListener("keyup", (event) => {
 // Move diagonally if two arrow keys are pressed simultaneously
 function handleDiagonalMovement() {
     if (keyState["ArrowUp"] && keyState["ArrowLeft"]) {
-        playerY -= 5;
-        playerX -= 5;
+        playerY -= 1.25;
+        playerX -= 1.25;
         playerDirection = "leftup";
     } else if (keyState["ArrowUp"] && keyState["ArrowRight"]) {
-        playerY -= 5;
-        playerX += 5;
+        playerY -= 1.25;
+        playerX += 1.25;
         playerDirection = "rightup";
     } else if (keyState["ArrowDown"] && keyState["ArrowLeft"]) {
-        playerY += 5;
-        playerX -= 5;
+        playerY += 1.25;
+        playerX -= 1.25;
         playerDirection = "leftdown";
     } else if (keyState["ArrowDown"] && keyState["ArrowRight"]) {
-        playerY += 5;
-        playerX += 5;
+        playerY += 1.25;
+        playerX += 1.25;
         playerDirection = "rightdown";
     }
 }
@@ -244,7 +244,7 @@ function updateEnemiesPosition() {
         const dx = playerX - enemy.x;
         const dy = playerY - enemy.y;
         const angle = Math.atan2(dy, dx);
-        const speed = 1.1; // Adjust speed as needed
+        const speed = 1.001; // Adjust speed as needed
         enemy.x += speed * Math.cos(angle);
         enemy.y += speed * Math.sin(angle);
     });
@@ -276,6 +276,7 @@ function gameOver() {
     clearInterval(coinsInterval);
     clearInterval(enemiesInterval);
     document.removeEventListener("keydown", movePlayer);
+    document.removeEventListener("keyup", movePlayer);
 }
 
 // Restart game
@@ -285,7 +286,7 @@ function restartGame() {
     enemies = [];
     score = 0;
     playerX = 400;
-    playerY = 350;
+    playerY = 300;
     document.getElementById("restartButton").style.display = "none";
     spawnCoins();
     spawnEnemies();
@@ -302,13 +303,13 @@ function movePlayer(event) {
     let newY = playerY;
 
     if (key === "ArrowUp") {
-        newY -= 5;
+        newY -= 2.5;
     } else if (key === "ArrowDown") {
-        newY += 5;
+        newY += 2.5;
     } else if (key === "ArrowLeft") {
-        newX -= 5;
+        newX -= 2.5;
     } else if (key === "ArrowRight") {
-        newX += 5;
+        newX += 2.5;
     }
 
     // Check collision with walls
