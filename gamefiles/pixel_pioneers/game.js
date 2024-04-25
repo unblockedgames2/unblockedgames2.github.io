@@ -309,9 +309,12 @@ function movePlayer(event) {
         newX += 2.5;
     }
 
-    // Update player position if there's no collision
+    // Update player position
     playerX = newX;
     playerY = newY;
+
+    // Check for coin collection after moving
+    checkCoinCollection();
 }
 
 // Draw the gun
