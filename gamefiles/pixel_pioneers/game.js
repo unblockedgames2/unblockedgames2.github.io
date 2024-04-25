@@ -8,9 +8,7 @@ let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
 let playerSize = 20;
 let gunLength = 25; // Length of the gun
-let coins = [];
 let enemies = [];
-let score = 0;
 const ver = "v1.0.6"
 const maxCoins = 10;
 const maxEnemies = 5;
@@ -82,21 +80,6 @@ function handleBoundaryTeleportation() {
     }
 }
 
-// Check for coin collection
-function checkCoinCollection() {
-    coins.forEach((coin, index) => {
-        if (
-            playerX < coin.x + coin.size &&
-            playerX + playerSize > coin.x &&
-            playerY < coin.y + coin.size &&
-            playerY + playerSize > coin.y
-        ) {
-            coins.splice(index, 1);
-            score++;
-        }
-    });
-}
-
 // Game loop
 function gameLoop() {
     handleDiagonalMovement();
@@ -113,17 +96,11 @@ function gameLoop() {
     // Draw gun
     drawGun();
 
-    // Draw coins
-    drawCoins();
-
     // Update enemies position
     updateEnemiesPosition();
 
     // Draw enemies
     drawEnemies();
-
-    // Check for coin collection
-    checkCoinCollection();
 
     // Display score
     ctx.fillStyle = "black";
@@ -196,18 +173,6 @@ function shoot() {
 // Generate random number between min and max
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-// Spawn coins
-function spawnCoins() {
-    setInterval(() => {
-        if (coins.length < maxCoins) {
-            const coinSize = 10;
-            const coinX = getRandomNumber(0, canvas.width - coinSize);
-            const coinY = getRandomNumber(0, canvas.height - coinSize);
-            coins.push({ x: coinX, y: coinY, size: coinSize });
-        }
-    }, 2000); // Spawn a new coin every 2 seconds
 }
 
 // Spawn enemies
