@@ -244,7 +244,7 @@ function updateEnemiesPosition() {
         const dx = playerX - enemy.x;
         const dy = playerY - enemy.y;
         const angle = Math.atan2(dy, dx);
-        const speed = 1.001; // Adjust speed as needed
+        const speed = 1.005; // Adjust speed as needed
         enemy.x += speed * Math.cos(angle);
         enemy.y += speed * Math.sin(angle);
     });
