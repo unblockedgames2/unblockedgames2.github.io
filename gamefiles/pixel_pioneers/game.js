@@ -19,6 +19,16 @@ const keyState = {};
 // Player movement
 document.addEventListener("keydown", (event) => {
     keyState[event.key] = true;
+// Shooting functionality
+document.addEventListener("keyup", (event) => {
+    keyState[event.key] = false; // Clear key state when key is released
+
+    if (event.keyCode === 32) { // Spacebar for shooting
+        if (!gameOverFlag) { // Only allow shooting if the game is not over
+            shoot();
+        }
+    }
+});
 
     // Move diagonally if two arrow keys are pressed simultaneously
     if (keyState["ArrowUp"] && keyState["ArrowLeft"]) {
@@ -80,16 +90,6 @@ document.addEventListener("keydown", (event) => {
     });
 });
 
-// Shooting functionality
-// Shooting functionality
-document.addEventListener("keyup", (event) => {
-    if (event.keyCode === 32) { // Spacebar for shooting
-        if (!gameOverFlag) { // Only allow shooting if the game is not over
-            shoot();
-        }
-    }
-});
-
 gameLoop();
 
 // Shoot function
@@ -146,17 +146,6 @@ function shoot() {
         });
     }, 20); // Adjust bullet interval for smoother animation
 }
-
-// Shooting functionality
-document.addEventListener("keyup", (event) => {
-    keyState[event.key] = false; // Clear key state when key is released
-
-    if (event.keyCode === 32) { // Spacebar for shooting
-        if (!gameOverFlag) { // Only allow shooting if the game is not over
-            shoot();
-        }
-    }
-});
 
 // Generate random number between min and max
 function getRandomNumber(min, max) {
