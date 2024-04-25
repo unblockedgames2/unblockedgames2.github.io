@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
-let log1 = "Add Favorites Section In Menu";
+let log1 = "Fix Shooting";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
@@ -11,7 +11,7 @@ let gunLength = 25; // Length of the gun
 let coins = [];
 let enemies = [];
 let score = 0;
-const ver = "v1.0.4"
+const ver = "v1.0.5"
 const maxCoins = 10;
 const maxEnemies = 5;
 const keyState = {};
