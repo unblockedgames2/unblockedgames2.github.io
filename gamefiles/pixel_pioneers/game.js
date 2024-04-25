@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Game variables
-let log1 = "Fix Shooting";
+let log1 = "Fix Shooting 2";
 let playerX = 400;
 let playerY = 350;
 let playerDirection = "down"; // Initial direction of the player
@@ -16,10 +16,9 @@ const maxCoins = 10;
 const maxEnemies = 5;
 const keyState = {};
 
-// Player movement
+// Button Pressed
 document.addEventListener("keydown", (event) => {
     keyState[event.key] = true;
-// Shooting functionality
 document.addEventListener("keyup", (event) => {
     keyState[event.key] = false; // Clear key state when key is released
 
