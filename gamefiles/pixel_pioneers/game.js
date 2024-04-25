@@ -122,6 +122,9 @@ function gameLoop() {
     // Draw enemies
     drawEnemies();
 
+    // Check for coin collection
+    checkCoinCollection();
+
     // Display score
     ctx.fillStyle = "black";
     ctx.font = "20px Arial";
