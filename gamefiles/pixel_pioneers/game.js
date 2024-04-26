@@ -14,10 +14,9 @@ const maxCoins = 10;
 const maxEnemies = 5;
 const keyState = {};
 
-// Button Pressed// Button Pressed
+// Button Pressed
 document.addEventListener("keydown", (event) => {
     keyState[event.key] = true;
-    movePlayer(event); // Call movePlayer function when key is pressed
 });
 document.addEventListener("keyup", (event) => {
     keyState[event.key] = false; // Clear key state when key is released
@@ -258,6 +257,7 @@ function restartGame() {
     spawnEnemies();
     gameLoop();
 }
+
 
 // Move player function
 function movePlayer(event) {
