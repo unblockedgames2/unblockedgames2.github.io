@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dragon Shooter with Gyro Aiming</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    body { margin: 0; background: #333; touch-action: none; }
+    canvas { display: block; margin: auto; background: #fff; }
+    #fireButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 0, 0, 0.5);
+      border-radius: 50%;
+      touch-action: manipulation;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <div id="fireButton"></div>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const fireButton = document.getElementById("fireButton");
+
+    // Input handling
+    let mouseX = 400, mouseY = 200;
+    let isMobile = /Mobi|Android/i.test(navigator.userAgent);
+    let gyroEnabled = false;
+
+    // Player object
+    const player = {
+      x: 50,
+      y: 300,
+      width: 20,
+      height: 50,
+      gunOffsetX: 20,
+      gunOffsetY: 25,
+      gunLength: 20
+    };
+
+    // Dragon object
+    const dragon = {
+      x: 600,
+      y: 150,
+      width: 100,
+      height: 60,
+      health: 100,
+      alive: true,
+      vy: 2,
+      minY: 100,
+      maxY: 300
+    };
+
+    // Bullets array
+    const bullets = [];
+    const bulletSpeed = 7;
+    const bulletRadius = 5;
+
+    // Mobile setup
+    if(isMobile) {
+      fireButton.style.display = "block";
+      setupGyro();
+      fireButton.addEventListener("touchstart", shootBullet);
+      fireButton.addEventListener("touchend", e => e.preventDefault());
+    }
+
+    // Desktop controls
+    document.addEventListener("keydown", e => { if(e.code === "Space") shootBullet(); });
+    canvas.addEventListener("mousemove", e => {
+      if(!isMobile) updateMousePosition(e);
+    });
+
+    // Touch aiming fallback
+    canvas.addEventListener("touchmove", e => {
+      e.preventDefault();
+      updateMousePosition(e.touches[0]);
+    }, { passive: false });
+
+    function updateMousePosition(e) {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    }
+
+    // Gyro setup
+    function setupGyro() {
+      if(typeof DeviceOrientationEvent !== 'undefined' && 
+         typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(permissionState => {
+            if(permissionState === 'granted') {
+              window.addEventListener("deviceorientation", handleOrientation);
+              gyroEnabled = true;
+            }
+          })
+          .catch(console.error);
+      } else {
+        window.addEventListener("deviceorientation", handleOrientation);
+        gyroEnabled = true;
+      }
+    }
+
+    function handleOrientation(event) {
+      if(!gyroEnabled) return;
+      const sensitivityX = 3;
+      const sensitivityY = 2;
+      
+      let moveX = (event.gamma || 0) * sensitivityX;
+      let moveY = (event.beta || 0) * sensitivityY;
+
+      mouseX = clamp(mouseX + moveX, 0, canvas.width);
+      mouseY = clamp(mouseY + moveY, 0, canvas.height);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function shootBullet() {
+      const gunTipX = player.x + player.gunOffsetX;
+      const gunTipY = player.y + player.gunOffsetY;
+      let dx = mouseX - gunTipX;
+      let dy = mouseY - gunTipY;
+      const dist = Math.hypot(dx, dy);
+      if(dist === 0) return;
+      
+      dx /= dist;
+      dy /= dist;
+      
+      bullets.push({
+        x: gunTipX,
+        y: gunTipY,
+        radius: bulletRadius,
+        vx: dx * bulletSpeed,
+        vy: dy * bulletSpeed
+      });
+    }
+
+    function updateBullets() {
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const bullet = bullets[i];
+        bullet.x += bullet.vx;
+        bullet.y += bullet.vy;
+
+        if(bullet.x < 0 || bullet.x > canvas.width || 
+           bullet.y < 0 || bullet.y > canvas.height) {
+          bullets.splice(i, 1);
+          continue;
+        }
+
+        if(dragon.alive &&
+           bullet.x + bullet.radius > dragon.x &&
+           bullet.x - bullet.radius < dragon.x + dragon.width &&
+           bullet.y + bullet.radius > dragon.y &&
+           bullet.y - bullet.radius < dragon.y + dragon.height) {
+          bullets.splice(i, 1);
+          dragon.health = Math.max(0, dragon.health - 1);
+          if(dragon.health <= 0) dragon.alive = false;
+        }
+      }
+    }
+
+    function updateDragon() {
+      if(!dragon.alive) return;
+      dragon.y += dragon.vy;
+      
+      if(dragon.y <= dragon.minY || dragon.y + dragon.height >= dragon.maxY) {
+        dragon.vy *= -1;
+      }
+    }
+
+    function update() {
+      updateBullets();
+      updateDragon();
+    }
+
+    function drawPlayer() {
+      // Body
+      ctx.fillStyle = "blue";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+      
+      // Head
+      ctx.beginPath();
+      ctx.arc(player.x + player.width/2, player.y - 10, 10, 0, Math.PI*2);
+      ctx.fill();
+
+      // Gun
+      const angle = Math.atan2(mouseY - (player.y + player.gunOffsetY), 
+                             mouseX - (player.x + player.gunOffsetX));
+      const gunEndX = player.x + player.gunOffsetX + Math.cos(angle) * player.gunLength;
+      const gunEndY = player.y + player.gunOffsetY + Math.sin(angle) * player.gunLength;
+      
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(player.x + player.gunOffsetX, player.y + player.gunOffsetY);
+      ctx.lineTo(gunEndX, gunEndY);
+      ctx.stroke();
+    }
+
+    function drawDragon() {
+      ctx.fillStyle = dragon.alive ? "red" : "#666";
+      ctx.fillRect(dragon.x, dragon.y, dragon.width, dragon.height);
+      
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText(`HP: ${dragon.health}`, dragon.x, dragon.y - 10);
+    }
+
+    function drawBullets() {
+      ctx.fillStyle = "black";
+      bullets.forEach(bullet => {
+        ctx.beginPath();
+        ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI*2);
+        ctx.fill();
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPlayer();
+      drawDragon();
+      drawBullets();
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>
